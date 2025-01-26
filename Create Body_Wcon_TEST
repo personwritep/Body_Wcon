@@ -1,115 +1,99 @@
 ​// ==UserScript==
-// @name         Body Wcon TEST ▶
-// @namespace    http://tampermonkey.net/
-// @version      0.2
-// @description  編集画面「デザイン幅で表示」のOFF時に幅コントロール
-// @author       Ameba Blog User
-// @match        https://blog.ameba.jp/ucs/entry/srventry*
-// @exclude      https://blog.ameba.jp/ucs/entry/srventrylist*
-// @icon         https://www.google.com/s2/favicons?sz=64&domain=ameba.jp
+// @name        JP Subtitles
+// @namespace        http://tampermonkey.net/
+// @version        0.3
+// @description        YouTube動画の日本語字幕をワンタッチで表示する
+// @author        YouTube User
+// @match        https://www.youtube.com/*
+// @icon        https://www.google.com/s2/favicons?sz=64&domain=youtube.com
 // @grant        none
+// @updateURL        ttps://github.com/personwritep/JP-Subtitles/raw/main/JP-Subtitles.user.js
+// @downloadURL        ttps://github.com/personwritep/JP-Subtitles/raw/main/JP-Subtitles.user.js
 // ==/UserScript==
 
 
-let ua=0;
-let agent=window.navigator.userAgent.toLowerCase();
-if(agent.indexOf('firefox')!=-1){ ua=1; } // Firefoxの場合
+let able_flag;
+
+let target=document.querySelector('head');
+let monitor=new MutationObserver(main);
+monitor.observe(target, { childList: true });
+
+main();
 
 
-let editorStyle=document.querySelector('.p-editorStyle');
-if(editorStyle){
-    editorStyle.style.width='220px'; // 固定デザイン
+function main(){
+    let h_v_p_p_m=document.querySelector('.html5-video-player.playing-mode');
+    let y_sb_b=document.querySelector('.ytp-subtitles-button');
 
-    let applyStyleWidth=document.querySelector('#applyStyleWidth');
-    if(applyStyleWidth){
-        applyStyleWidth.addEventListener('input', function(){
-            if(applyStyleWidth.checked){
-                show_off(); }
-            else{
-                show_on(); }
-        }); }}
-
-
-
-function show_on(){
-    let bwidth=localStorage.getItem('BodyWcon'); // モバイル　ディスプレイ幅値 🔵
-    if(!bwidth){
-        bwidth=360; }
-
-    let cont=
-        '<div id="con_container">'+
-        '<span id="con_val"></span>'+
-        '<input id="width_con" '+
-        'type="range" min="280" value="620" step="1">'+
-        '<style>'+
-        '.p-editorStyle { width: 220px; }'+
-        '#applyStyleWidthLabel { font-size: 0; }'+
-        '#js-editorStyleQuestion, js-editorStyleBalloon { display: none; }'+
-        '#con_container { display: inline-block; width: 180px; }'+
-        '#con_val { display: inline-block; width: 36px; font-size: 14px; vertical-align: 3px; }'+
-        '#width_con { width: calc(100% - 40px); }';
-
-    if(ua==1){
-        cont+=
-            '#con_container { margin-top: -2px; }'+
-            '#con_val { vertical-align: 5px; }'; }
-
-    cont+='</style></div>';
+    if(y_sb_b && h_v_p_p_m){
+        y_sb_b.onclick=function(){
+            able();
+            if(able_flag==1){
+                push_0();
+                setTimeout(()=>{
+                    push_1(); }, 20);
+                setTimeout(()=>{
+                    push_2();
+                    hide(); }, 40);
+                setTimeout(()=>{
+                    push_3();
+                    hide(); }, 200);
+                end(); }
+        }}}
 
 
-    if(!document.querySelector('#width_con')){
-        editorStyle.insertAdjacentHTML('beforeend', cont); }
-    let width_con=document.querySelector('#width_con');
-    let con_val=document.querySelector('#con_val');
+function able(){
+    let y_sb_b=document.querySelector('.ytp-subtitles-button');
+    if(y_sb_b){
+        if(y_sb_b.getAttribute('aria-pressed')=='true'){
+            able_flag=1; }
+        else{
+            able_flag=0; }}}
 
 
-
-    let editor_iframe=document.querySelector('.cke_wysiwyg_frame');
-    if(editor_iframe){ // iframe読込みが実行条件
-        let iframe_doc=editor_iframe.contentWindow.document;
-        if(iframe_doc){
-            let iframe_body=iframe_doc.querySelector('body.cke_editable');
-            if(iframe_body){
-                let cont_iframe='<style id="editer_width_con"></style>';
-                if(!iframe_body.querySelector('#editer_width_con')){
-                    iframe_body.insertAdjacentHTML('beforeend', cont_iframe); }
-                let editer_width_con=iframe_doc.querySelector('#editer_width_con');
-
-                let max_width=editor_iframe.getBoundingClientRect().width - 32;
-                width_con.max=max_width;
-
-                width_con.value=bwidth;
-                con_val.textContent=bwidth;
-                editer_width_con.textContent=
-                    'body.cke_editable { width: '+(bwidth/1 + 16) +'px !important; }';
-
-                width_con.addEventListener('input', function(){
-                    bwidth=width_con.value;
-                    con_val.textContent=bwidth;
-                    editer_width_con.textContent=
-                        'body.cke_editable { width: '+(bwidth/1 + 16) +'px !important; }';
-
-                    localStorage.setItem('BodyWcon', bwidth); // 機種ディスプレイ幅セット 🔵
-                });
-            }}}
-
-} // show_on()
+function hide(){
+    let y_s_m=document.querySelector('.ytp-settings-menu');
+    if(y_s_m){
+        y_s_m.style.display='none'; }}
 
 
+function push_0(){
+    let y_st_b=document.querySelector('.ytp-settings-button');
+    if(y_st_b){
+        y_st_b.click(); }}
 
 
-function show_off(){
-    let editor_iframe=document.querySelector('.cke_wysiwyg_frame');
-    if(editor_iframe){ // iframe読込みが実行条件
-        let iframe_doc=editor_iframe.contentWindow.document;
-        if(iframe_doc){
-            let editer_width_con=iframe_doc.querySelector('#editer_width_con');
-            if(editer_width_con){
-                editer_width_con.remove(); }}}
+function push_1(){
+    let y_menu=document.querySelectorAll('.ytp-menuitem');
+    for(let k=0; k<y_menu.length; k++){
+        if(y_menu[k].querySelector('.ytp-menuitem-icon')){
+            if(y_menu[k].textContent.includes('字幕')
+               && y_menu[k].querySelector('.ytp-menuitem-label-count')){
+                if(able_flag==1){
+                    y_menu[k].click(); }}}}}
 
 
-    let con_container=document.querySelector('#con_container');
-    if(con_container){
-        con_container.remove(); }
+function push_2(){
+    let y_m=document.querySelectorAll('.ytp-menuitem');
+    for(let k=0; k<y_m.length; k++){
+        if(y_m[k].textContent.includes('自動翻訳')){
+            if(able_flag==1){
+                y_m[k].click(); }}}}
 
-} // show_off()
+
+function push_3(){
+    let y_m=document.querySelectorAll('.ytp-menuitem');
+    for(let k=0; k<y_m.length; k++){
+        if(y_m[k].textContent.includes('日本語')){
+            if(able_flag==1){
+                y_m[k].click(); }}}}
+
+
+function end(){
+    let y_m_c=document.querySelectorAll('.ytp-menuitem-content');
+    for(let k=0; k<y_m_c.length; k++){
+        if(y_m_c[k].textContent.includes('>> 日本語')){
+            able_flag=0;
+            let y_s_m=document.querySelector('.ytp-settings-menu');
+            if(y_s_m){
+                y_s_m.style.display='inherit'; }}}}
