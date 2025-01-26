@@ -1,4 +1,4 @@
-​// ==UserScript==
+// ==UserScript==
 // @name        JP Subtitles
 // @namespace        http://tampermonkey.net/
 // @version        0.3
