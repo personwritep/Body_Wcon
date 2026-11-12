@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Body Wcon
 // @namespace        http://tampermonkey.net/
-// @version        0.4
+// @version        0.5
 // @description        編集画面「デザイン幅で表示」のOFF時に幅コントロール
 // @author        Ameba Blog User
 // @match        https://blog.ameba.jp/ucs/entry/srventryinsertinput.do*
@@ -24,12 +24,12 @@ if(editorStyle){
 
     let applyStyleWidth=document.querySelector('#applyStyleWidth');
     if(applyStyleWidth){
-        applyStyleWidth.addEventListener('input', function(){
+        applyStyleWidth.oninput=()=>{
             if(applyStyleWidth.checked){
                 show_off(); }
             else{
                 show_on(); }
-        }); }}
+        }}}
 
 
 
@@ -85,14 +85,14 @@ function show_on(){
                 editer_width_con.textContent=
                     'body.cke_editable { width: '+(bwidth/1 + 16) +'px !important; }';
 
-                width_con.addEventListener('input', function(){
+                width_con.oninput=()=>{
                     bwidth=width_con.value;
                     con_val.textContent=bwidth;
                     editer_width_con.textContent=
                         'body.cke_editable { width: '+(bwidth/1 + 16) +'px !important; }';
 
                     localStorage.setItem('BodyWcon', bwidth); // 機種ディスプレイ幅セット 🔵
-                });
+                }
             }}}
 
 } // show_on()
